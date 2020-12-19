@@ -52,6 +52,7 @@ function drawPaddle (){
 // make the ball moving and change direction when it hit the wall
 function draw (){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPaddle();
     drawBall();
     x += dx;
     y += dy;
