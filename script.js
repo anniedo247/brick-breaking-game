@@ -43,13 +43,20 @@ var bricks = [];
 var score = 0;
 var lives = 3;
 var highScore = 0;
+var gameStatus = 1;
 
-for (var c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (var r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
+function init(){
+    bricks = [];
+    for (var c = 0; c < brickColumnCount; c++) {
+        bricks[c] = [];
+        for (var r = 0; r < brickRowCount; r++) {
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+    }
+    score = 0;
+    lives = 3;
 }
+init();
 
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
@@ -57,16 +64,23 @@ document.addEventListener("keyup", keyUpHandler);
 function keyDownHandler(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
     rightPressed = true;
-  } else if (e.key == "Left" || e.key == "ArrowLeft") {
+  } 
+  if (e.key == "Left" || e.key == "ArrowLeft") {
     leftPressed = true;
   }
 }
 function keyUpHandler(e) {
   if (e.key == "Right" || e.key == "ArrowRight") {
     rightPressed = false;
-  } else if (e.key == "Left" || e.key == "ArrowLeft") {
+  } 
+  if (e.key == "Left" || e.key == "ArrowLeft") {
     leftPressed = false;
   }
+  if (e.key == "Enter" && gameStatus == 0){
+    gameStatus = 1;
+    init();
+    interval = setInterval(draw, 10);
+}
 }
 function collisionDetection() {
   for (var c = 0; c < brickColumnCount; c++) {
@@ -82,12 +96,14 @@ function collisionDetection() {
           dy = -dy;
           b.status = 0;
           score++;
-          highScore = score;
+          if (score > highScore) {
+            highScore = score;
+          }
           
           if (score == brickRowCount * brickColumnCount) {
             alert("YOU WIN, CONGRATULATIONS!");
-            document.location.reload();
             clearInterval(interval); // Needed for Chrome to end game
+            gameStatus = 0;
           }
         }
       }
@@ -176,7 +192,7 @@ function draw() {
         ctx.fillText(" GAME OVER", canvas.width / 3, canvas.height / 2);
         //document.location.reload();
         clearInterval(interval);
-       
+        gameStatus = 0;
       } else {
          
             x = canvas.width / 2;
